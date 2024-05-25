@@ -29,7 +29,7 @@ import uniffi.wysiwyg_composer.newMentionDetector
 /**
  * This TextView can display all spans used by the editor.
  */
-open class EditorStyledTextView : AppCompatTextView {
+open class EditorStyledTextView : WrapWidthTextView {
 
     // Used to automatically clean up the native resources when this instance is GCed
     private val cleaner = Cleaner.getCleaner()
