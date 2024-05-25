@@ -1,3 +1,5 @@
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
+
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
@@ -6,12 +8,31 @@ plugins {
     id 'org.mozilla.rust-android-gradle.rust-android'
 
     alias libs.plugins.jacoco.android
-    alias libs.plugins.maven.publish
+    alias libs.plugins.maven.publish.base // SC: need base to disable signing for now
 }
 
 if (project.hasProperty("coverage")) {
     apply plugin: 'jacoco'
 }
+
+// SC publish, compare https://vanniktech.github.io/gradle-maven-publish-plugin/other/
+mavenPublishing {
+    pomFromGradleProperties()
+    def publishJavaDoc = false // https://github.com/Kotlin/dokka/issues/2956
+    def publishSources = true
+    configure(new AndroidSingleVariantLibrary("release", publishSources, publishJavaDoc))
+}
+publishing {
+    repositories {
+        maven {
+            name = "githubPackages"
+            url = "https://maven.pkg.github.com/SchildiChat/matrix-rich-text-editor"
+            // Env vars: `ORG_GRADLE_PROJECT_githubPackagesUsername` and `ORG_GRADLE_PROJECT_githubPackagesPassword`
+            credentials(PasswordCredentials)
+        }
+    }
+}
+// SC publish end
 
 cargo {
     module = "../../../bindings/wysiwyg-ffi"    // The directory which contains Cargo.toml

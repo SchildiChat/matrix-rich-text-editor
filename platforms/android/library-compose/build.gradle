@@ -16,13 +16,28 @@ if (project.hasProperty("coverage")) {
 
 mavenPublishing {
     pomFromGradleProperties()
+    /* SC: nope
     publishToMavenCentral(SonatypeHost.S01)
     signAllPublications()
+    */
 
     def publishJavaDoc = false // https://github.com/Kotlin/dokka/issues/2956
     def publishSources = true
     configure(new AndroidSingleVariantLibrary("release", publishSources, publishJavaDoc))
 }
+
+// SC publish, compare https://vanniktech.github.io/gradle-maven-publish-plugin/other/
+publishing {
+    repositories {
+        maven {
+            name = "githubPackages"
+            url = "https://maven.pkg.github.com/SchildiChat/matrix-rich-text-editor"
+            // Env vars: `ORG_GRADLE_PROJECT_githubPackagesUsername` and `ORG_GRADLE_PROJECT_githubPackagesPassword`
+            credentials(PasswordCredentials)
+        }
+    }
+}
+// SC publish end
 
 android {
     namespace 'io.element.android.wysiwyg.compose'
