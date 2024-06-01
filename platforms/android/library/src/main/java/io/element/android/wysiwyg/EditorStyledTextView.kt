@@ -180,6 +180,7 @@ open class EditorStyledTextView : WrapWidthTextView {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        enableWrapWidth = text.allowWrapWidth()
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
         layout?.let { onTextLayout?.invoke(it) }
