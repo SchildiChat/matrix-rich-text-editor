@@ -23,7 +23,7 @@ describe('useWysiwyg', () => {
     describe('Rendering characters', () => {
         let editor: HTMLDivElement;
 
-        function setEditorHtml(html: string) {
+        function setEditorHtml(html: string): void {
             // The editor always needs an extra BR after your HTML
             editor.innerHTML = html + '<br />';
         }
@@ -31,7 +31,7 @@ describe('useWysiwyg', () => {
         beforeEach(async () => {
             render(
                 <Editor
-                    ref={(node) => {
+                    ref={(node): void => {
                         if (node) {
                             editor = node;
                         }
@@ -144,6 +144,28 @@ describe('useWysiwyg', () => {
 
         // this attribute is passed through, from the html into the rust model
         expect(mention).toHaveAttribute('style', testStyle);
+    });
+
+    test('Typing plain text converts to emoji', async () => {
+        const emojiSuggestions = new Map<string, string>([[':)', '🙂']]);
+        render(
+            <Editor initialContent="" emojiSuggestions={emojiSuggestions} />,
+        );
+
+        const textbox = screen.getByRole('textbox');
+        await waitFor(() =>
+            expect(textbox).toHaveAttribute('contentEditable', 'true'),
+        );
+        fireEvent.input(textbox, {
+            data: 'test :)',
+            inputType: 'insertText',
+        });
+        fireEvent.input(textbox, {
+            data: ' ',
+            inputType: 'insertText',
+        });
+
+        await expect(textbox).toHaveTextContent('test 🙂');
     });
 
     test('Create wysiwyg with initial content', async () => {

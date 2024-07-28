@@ -14,9 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { RefObject, useEffect, useMemo, useRef } from 'react';
+import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 
-import { InputEventProcessor } from './types.js';
+import {
+    AllActionStates,
+    FormattingFunctions,
+    InputEventProcessor,
+    MappedSuggestion,
+    TraceAction,
+} from './types.js';
 import { useFormattingFunctions } from './useFormattingFunctions';
 import { useComposerModel } from './useComposerModel';
 import { useListeners } from './useListeners';
@@ -28,17 +34,17 @@ export { richToPlain, plainToRich } from './conversion';
 function useEditorFocus(
     editorRef: RefObject<HTMLElement | null>,
     isAutoFocusEnabled = false,
-) {
+): void {
     useEffect(() => {
         if (isAutoFocusEnabled) {
             // TODO remove this workaround
             const id = setTimeout(() => editorRef.current?.focus(), 200);
-            return () => clearTimeout(id);
+            return (): void => clearTimeout(id);
         }
     }, [editorRef, isAutoFocusEnabled]);
 }
 
-function useEditor() {
+function useEditor(): React.MutableRefObject<HTMLDivElement | null> {
     const ref = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -54,15 +60,44 @@ export type WysiwygProps = {
     isAutoFocusEnabled?: boolean;
     inputEventProcessor?: InputEventProcessor;
     initialContent?: string;
+    emojiSuggestions?: Map<string, string>;
 };
 
-export function useWysiwyg(wysiwygProps?: WysiwygProps) {
+export type UseWysiwyg = {
+    ref: React.MutableRefObject<HTMLDivElement | null>;
+    isWysiwygReady: boolean;
+    wysiwyg: FormattingFunctions;
+    content: string | null;
+    actionStates: AllActionStates;
+    debug: {
+        modelRef: RefObject<HTMLDivElement>;
+        testRef: RefObject<HTMLDivElement>;
+        resetTestCase: () => void | null;
+        traceAction: TraceAction;
+    };
+    suggestion: MappedSuggestion | null;
+    messageContent: string | null;
+};
+
+function getEmojiKeys(emojiSuggestions?: Map<string, string>): string[] {
+    const keys = emojiSuggestions?.keys();
+    return keys ? Array.from(keys) : [];
+}
+
+export function useWysiwyg(wysiwygProps?: WysiwygProps): UseWysiwyg {
     const ref = useEditor();
     const modelRef = useRef<HTMLDivElement>(null);
+    const [emojiKeys, setEmojiKeys] = useState(
+        getEmojiKeys(wysiwygProps?.emojiSuggestions),
+    );
+    useEffect(() => {
+        setEmojiKeys(getEmojiKeys(wysiwygProps?.emojiSuggestions));
+    }, [wysiwygProps?.emojiSuggestions]);
 
     const { composerModel, onError } = useComposerModel(
         ref,
         wysiwygProps?.initialContent,
+        emojiKeys,
     );
     const { testRef, utilities: testUtilities } = useTestCases(
         ref,
@@ -80,6 +115,7 @@ export function useWysiwyg(wysiwygProps?: WysiwygProps) {
             formattingFunctions,
             onError,
             wysiwygProps?.inputEventProcessor,
+            wysiwygProps?.emojiSuggestions,
         );
 
     useEditorFocus(ref, wysiwygProps?.isAutoFocusEnabled);

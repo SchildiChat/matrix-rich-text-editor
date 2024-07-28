@@ -23,11 +23,22 @@ import {
     resetTestCase,
     traceAction,
 } from './utils';
+import { TraceAction } from '../types';
+
+export type UseTestCases = {
+    testRef: RefObject<HTMLDivElement>;
+    utilities: {
+        traceAction: TraceAction;
+        getSelectionAccordingToActions: () => [number, number];
+        onResetTestCase: () => void | null;
+        setEditorHtml: (content: string) => void;
+    };
+};
 
 export function useTestCases(
     editorRef: RefObject<HTMLElement | null>,
     composerModel: ComposerModel | null,
-) {
+): UseTestCases {
     const testRef = useRef<HTMLDivElement>(null);
     const [actions, setActions] = useState<Actions>([]);
 

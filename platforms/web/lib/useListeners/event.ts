@@ -56,7 +56,7 @@ export function sendWysiwygInputEvent(
         | LinkEvent['data']
         | SuggestionEvent['data']
         | AtRoomSuggestionEvent['data'],
-) {
+): void {
     e?.preventDefault();
     e?.stopPropagation();
     editor.dispatchEvent(
@@ -140,7 +140,7 @@ export function handleKeyDown(
     composerModel: ComposerModel,
     formattingFunctions: FormattingFunctions,
     inputEventProcessor?: InputEventProcessor,
-) {
+): void {
     const inputType = getInputFromKeyDown(
         e,
         composerModel,
@@ -184,6 +184,7 @@ export function handleInput(
     formattingFunctions: FormattingFunctions,
     suggestion: SuggestionPattern | null,
     inputEventProcessor?: InputEventProcessor,
+    emojiSuggestions?: Map<string, string>,
 ):
     | {
           content?: string;
@@ -199,6 +200,7 @@ export function handleInput(
         editor,
         suggestion,
         inputEventProcessor,
+        emojiSuggestions,
     );
     if (update) {
         const repl = update.text_update().replace_all;
