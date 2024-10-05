@@ -1,10 +1,10 @@
 [package]
 authors = ["Jonny Andrew <jonnya@element.io>"]
-homepage = "https://github.com/matrix-org/matrix-rich-text-editor"
-repository = "https://github.com/matrix-org/matrix-rich-text-editor"
+homepage = "https://github.com/element-hq/matrix-rich-text-editor"
+repository = "https://github.com/element-hq/matrix-rich-text-editor"
 description = "Utilities for Matrix mentions"
 keywords = ["matrix", "chat", "messaging"]
-license = "Apache-2.0"
+license = "AGPL-3.0"
 name = "matrix_mentions"
 version = "0.1.0"
 edition = "2021"

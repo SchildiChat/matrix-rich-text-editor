@@ -1,14 +1,14 @@
 {
-    "name": "@matrix-org/matrix-wysiwyg",
+    "name": "@schildi-chat/matrix-wysiwyg",
     "version": "3.0.4",
     "type": "module",
-    "description": "Wysiwyg composer for matrix.org using React",
-    "author": "matrix.org",
+    "description": "Wysiwyg composer for Element Web using React",
+    "author": "New Vector Ltd.",
     "repository": {
         "type": "git",
-        "url": "https://github.com/matrix-org/matrix-wysiwyg"
+        "url": "https://github.com/element-hq/matrix-rich-text-editor"
     },
-    "license": "Apache-2.0",
+    "license": "AGPL-3.0",
     "main": "./dist/matrix-wysiwyg.umd.cjs",
     "module": "./dist/matrix-wysiwyg.js",
     "exports": {

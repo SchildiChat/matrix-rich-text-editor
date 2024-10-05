@@ -5,7 +5,7 @@ homepage = "https://gitlab.com/andybalaam/wysiwyg-rust"
 repository = "https://gitlab.com/andybalaam/wysiwyg-rust"
 description = "WASM bindings for wysiwyg-rust"
 keywords = ["matrix", "chat", "messaging", "composer", "wysiwyg"]
-license = "Apache-2.0"
+license = "AGPL-3.0"
 name = "wysiwyg-wasm"
 version = "3.0.4"
 rust-version = { workspace = true }
@@ -26,6 +26,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 console_error_panic_hook = "0.1.7"
+html-escape = "0.2.11"
 js-sys = "0.3.60"
 wasm-bindgen = "0.2.83"
 wasm-bindgen-futures = "0.4.33"

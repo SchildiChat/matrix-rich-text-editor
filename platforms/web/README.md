@@ -1,6 +1,6 @@
 # React Matrix Rich Text Editor
 
-[![react-build](https://github.com/matrix-org/matrix-wysiwyg/actions/workflows/react-build.yml/badge.svg?branch=main)](https://github.com/matrix-org/matrix-wysiwyg/actions/workflows/react-build.yml)
+[![react-build](https://github.com/element-hq/matrix-rich-text-editor/actions/workflows/react-build.yml/badge.svg?branch=main)](https://github.com/element-hq/matrix-rich-text-editor/actions/workflows/react-build.yml)
 
 The Matrix Rich Text Editor is a React library.
 

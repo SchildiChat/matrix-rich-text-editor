@@ -80,12 +80,7 @@ jobs:
         uses: gradle/gradle-build-action@v3
         with:
           build-root-directory: platforms/android
-          arguments: publishAllPublicationsToMavenCentral
-      - name: 🚀 Close staging repo and release version
-        uses: gradle/gradle-build-action@v3
-        with:
-          build-root-directory: platforms/android
-          arguments: closeAndReleaseRepository
+          arguments: publishAndReleaseToMavenCentral
 
   npm:
     name: Publish to npm

@@ -3,7 +3,7 @@
   "version": "3.0.4",
   "homepage": "https://gitlab.com/andybalaam/wysiwyg-rust",
   "description": "WASM bindings for wysiwyg-rust",
-  "license": "Apache-2.0",
+  "license": "AGPL-3.0",
   "collaborators": [
     "Andy Balaam <andy.balaam@matrix.org>"
   ],

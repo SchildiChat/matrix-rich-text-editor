@@ -90,7 +90,7 @@ android {
         jacocoVersion = "0.8.8"
     }
 
-    ndkVersion = "25.2.9519653"
+    ndkVersion = "27.1.12297006"
 
     packagingOptions {
         resources.excludes += 'META-INF/LICENSE.md'
@@ -104,7 +104,7 @@ kotlin {
 
 dependencies {
 
-    implementation "net.java.dev.jna:jna:5.14.0@aar"
+    implementation "net.java.dev.jna:jna:5.15.0@aar"
 
     implementation libs.kotlin.coroutines.android
     implementation libs.kotlin.coroutines

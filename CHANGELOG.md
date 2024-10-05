@@ -1,5 +1,24 @@
 # Changelog
 
+# [2.37.13] - 2024-10-04
+- [Android] Make `RichTextEditorStyle` and other data classes' constructors public to match their `copy` methods in Kotlin 2.0. This would cause build errors on Kotlin 2.1.
+
+# [2.37.12] - 2024-10-02
+
+- [Common] Dependencies update
+- [iOS] fixed a release bug that prevented the XCFramework to be downloaded from SwiftPM.
+
+# [2.37.11] - 2024-10-01
+
+- [Common] matrix-rich-text-editor is being forked by Element at https://github.com/element-hq/matrix-rich-text-editor. Contributions are licensed to Element under a CLA and made available under an AGPLv3.0 license.
+  You can read more about this here:
+  - https://matrix.org/blog/2024/08/heart-of-matrix/
+  - https://element.io/blog/sustainable-licensing-at-element-with-agpl/
+- [Web] The matrix-wysiwyg npm package will now be published at https://www.npmjs.com/package/@vector-im/matrix-wysiwyg
+
+# [2.37.9] - 2024-08-28
+- [Rust] Escape text passed to `ComposerModel::set_link_with_text` and `insert_mention*` methods of the WASM bindings.
+
 # [2.37.8] - 2024-07-31
 - [Web] Fix a bug that caused the composer to be reinitialised a second time.
 
