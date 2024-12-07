@@ -1,5 +1,10 @@
 # Changelog
 
+# [2.37.14]
+- [Android] Have separate modes for parsing HTML for 'editor mode' and 'message mode' using `isEditor: Boolean` parameter.
+- [Android] Try auto-selecting the latest NDK version available instead of using a hardcoded one.
+- [Web] Update example app to use the new npm package.
+
 # [2.37.13] - 2024-10-04
 - [Android] Make `RichTextEditorStyle` and other data classes' constructors public to match their `copy` methods in Kotlin 2.0. This would cause build errors on Kotlin 2.1.
 

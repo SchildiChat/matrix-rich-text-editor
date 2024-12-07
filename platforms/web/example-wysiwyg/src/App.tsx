@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 Please see LICENSE in the repository root for full details.
 */
 
-import { useWysiwyg } from '@matrix-org/matrix-wysiwyg';
+import { useWysiwyg } from '@vector-im/matrix-wysiwyg';
 
 import './App.css';
 

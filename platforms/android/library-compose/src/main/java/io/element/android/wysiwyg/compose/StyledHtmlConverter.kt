@@ -20,6 +20,7 @@ import timber.log.Timber
 class StyledHtmlConverter(
     private val context: Context,
     private val mentionDisplayHandler: MentionDisplayHandler?,
+    private val isEditor: Boolean,
     private val isMention: ((text: String, url: String) -> Boolean)?,
 ) : HtmlConverter {
 
@@ -31,6 +32,7 @@ class StyledHtmlConverter(
             context = context,
             styleConfig = style.toStyleConfig(context),
             mentionDisplayHandler = mentionDisplayHandler,
+            isEditor = isEditor,
             isMention = isMention,
         )
     }

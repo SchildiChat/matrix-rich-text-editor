@@ -54,6 +54,7 @@ internal class HtmlToSpansParser(
     private val html: String,
     private val styleConfig: StyleConfig,
     private val mentionDisplayHandler: MentionDisplayHandler?,
+    private val isEditor: Boolean,
     private val isMention: ((text: String, url: String) -> Boolean)? = null,
 ) {
     private val safeList = Safelist()
@@ -301,6 +302,10 @@ internal class HtmlToSpansParser(
     private fun SpannableStringBuilder.addLeadingLineBreakForBlockNode(element: Element) {
         if (element.isBlock && element.previousElementSibling()?.takeIf { it.tagName() != "br" } != null) {
             append('\n')
+            // If we're not in editor mode, add another line break to separate blocks
+            if (!isEditor) {
+                append('\n')
+            }
         }
     }
 

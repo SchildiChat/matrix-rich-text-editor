@@ -217,6 +217,7 @@ open class EditorStyledTextView : WrapWidthTextView {
         return HtmlConverter.Factory.create(context = context,
             styleConfig = styleConfig,
             mentionDisplayHandler = mentionDisplayHandler,
+            isEditor = false,
             isMention = mentionDetector?.let { detector ->
                 { _, url ->
                     detector.isMention(url)

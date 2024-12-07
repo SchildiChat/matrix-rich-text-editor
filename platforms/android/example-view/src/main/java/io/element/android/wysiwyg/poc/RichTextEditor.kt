@@ -177,9 +177,9 @@ class RichTextEditor : LinearLayout {
                 val rooms = listOf("matrix", "element").map(Mention::Room)
                 val everyone = Mention.NotifyEveryone
                 val names = when (menuAction.suggestionPattern.key) {
-                    PatternKey.AT -> people + everyone
-                    PatternKey.HASH -> rooms
-                    PatternKey.SLASH ->
+                    PatternKey.At -> people + everyone
+                    PatternKey.Hash -> rooms
+                    PatternKey.Slash, is PatternKey.Custom ->
                         emptyList() // TODO
                 }
                 val suggestions = names

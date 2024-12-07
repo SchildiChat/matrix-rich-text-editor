@@ -41,6 +41,7 @@ cargo {
     targets = ["arm", "x86", "x86_64", "arm64"]
     targetIncludes = ["libuniffi_wysiwyg_composer.so"]
     targetDirectory = '../../../target'
+    prebuiltToolchains = true
 }
 
 android {
@@ -90,12 +91,13 @@ android {
         jacocoVersion = "0.8.8"
     }
 
-    ndkVersion = "27.2.12479018"
-
     packagingOptions {
         resources.excludes += 'META-INF/LICENSE.md'
         resources.excludes += 'META-INF/LICENSE-notice.md'
     }
+
+    //ndkVersion getNdkVersionAsWorkaround()
+    ndkVersion = "27.2.12479018" // SC: fix to same version as SchildiNext+Rust-SDK for reproducible F-Droid builds
 }
 
 kotlin {
@@ -164,3 +166,10 @@ tasks.withType(Test) {
     jacoco.excludes = ['jdk.internal.*']
 }
 
+// Workaround for https://github.com/mozilla/rust-android-gradle/issues/46
+// This looks for the NDK path like: '/some/path/to/sdk/ndk/23.0.7599858'
+// and takes the last path component, which should be the version number
+def getNdkVersionAsWorkaround() {
+    def ndkDirectory = new File(android.sdkDirectory, "ndk")
+    return ndkDirectory.list().sort().last().split(PATH_SEPARATOR).last()
+}

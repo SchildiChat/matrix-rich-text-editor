@@ -94,6 +94,7 @@ class EditorEditText : AppCompatEditText {
             context = context.applicationContext,
             styleConfig = styleConfig,
             mentionDisplayHandler = mentionDisplayHandler,
+            isEditor = true,
         )
     }
 

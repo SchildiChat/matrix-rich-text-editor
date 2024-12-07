@@ -180,8 +180,43 @@ class HtmlToSpansParserTest {
         )
     }
 
+    @Test
+    fun testParagraphsAreTranslatedToSingleLineBreakWhenEditorModeIsEnabled() {
+        val html = """
+            <p>Hello</p><p>World!</p>
+        """.trimIndent()
+        val spanned = convertHtml(html, isEditor = true, mentionDisplayHandler = object : MentionDisplayHandler {
+            override fun resolveAtRoomMentionDisplay(): TextDisplay =
+                TextDisplay.Pill
+
+            override fun resolveMentionDisplay(text: String, url: String): TextDisplay =
+                TextDisplay.Pill
+        })
+        assertThat(
+            spanned.toString(), equalTo("Hello\nWorld!")
+        )
+    }
+
+    @Test
+    fun testParagraphsAreTranslatedToDoubleLineBreakWhenEditorModeIsDisabled() {
+        val html = """
+            <p>Hello</p><p>World!</p>
+        """.trimIndent()
+        val spanned = convertHtml(html, isEditor = false, mentionDisplayHandler = object : MentionDisplayHandler {
+            override fun resolveAtRoomMentionDisplay(): TextDisplay =
+                TextDisplay.Pill
+
+            override fun resolveMentionDisplay(text: String, url: String): TextDisplay =
+                TextDisplay.Pill
+        })
+        assertThat(
+            spanned.toString(), equalTo("Hello\n\nWorld!")
+        )
+    }
+
     private fun convertHtml(
         html: String,
+        isEditor: Boolean = true,
         mentionDisplayHandler: MentionDisplayHandler? = null,
     ): Spanned {
         val app = RuntimeEnvironment.getApplication()
@@ -191,6 +226,7 @@ class HtmlToSpansParserTest {
             html = html,
             styleConfig = styleConfig,
             mentionDisplayHandler = mentionDisplayHandler,
+            isEditor = isEditor,
             isMention = { _, url ->
                 url.startsWith("https://matrix.to/#/@")
             }

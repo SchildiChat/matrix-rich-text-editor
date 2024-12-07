@@ -70,6 +70,7 @@ class MainActivity : ComponentActivity() {
                     StyledHtmlConverter(
                         context = context,
                         mentionDisplayHandler = mentionDisplayHandler,
+                        isEditor = false,
                         isMention = mentionDetector?.let { detector ->
                             { _, url ->
                                 detector.isMention(url)

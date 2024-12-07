@@ -37,6 +37,7 @@ class InterceptInputConnectionIntegrationTest {
         it.htmlConverter = HtmlConverter.Factory.create(
             context = app,
             styleConfig = styleConfig,
+            isEditor = true,
             mentionDisplayHandler = null,
         )
     }
