@@ -26,6 +26,7 @@ import io.element.android.wysiwyg.view.spans.CodeBlockSpan
 import io.element.android.wysiwyg.view.spans.CustomMentionSpan
 import io.element.android.wysiwyg.view.spans.ExtraCharacterSpan
 import io.element.android.wysiwyg.view.spans.InlineCodeSpan
+import io.element.android.wysiwyg.view.spans.InlineImageSpan
 import io.element.android.wysiwyg.view.spans.LinkSpan
 import io.element.android.wysiwyg.view.spans.OrderedListSpan
 import io.element.android.wysiwyg.view.spans.PillSpan
@@ -60,9 +61,10 @@ internal class HtmlToSpansParser(
     private val safeList = Safelist()
         .addTags(
             "a", "b", "strong", "i", "em", "u", "del", "code", "ul", "ol", "li", "pre",
-            "blockquote", "p", "br"
+            "blockquote", "p", "br", "img"
         )
         .addAttributes("a", "href", "data-mention-type", "contenteditable")
+        .addAttributes("img", "src", "title", "alt", "width", "height", "data-mx-emoticon")
 
     /**
      * Convert the HTML string into a [Spanned] text.
@@ -98,6 +100,7 @@ internal class HtmlToSpansParser(
             "del" -> parseInlineFormatting(element, InlineFormat.StrikeThrough)
             // Note we're using a different method for inline code
             "code" -> parseInlineCode(element)
+            "img" -> parseInlineImage(element)
             "ul", "ol" -> parseList(element)
             "li" -> parseListItem(element)
             "pre" -> parseCodeBlock(element)
@@ -237,6 +240,26 @@ internal class HtmlToSpansParser(
         } else {
             parseChildren(element)
         }
+    }
+
+    private fun SpannableStringBuilder.parseInlineImage(element: Element) {
+        val start = this.length
+        val src = element.attr("src") ?: return
+        val title = element.attr("title")
+        val alt = element.attr("alt")
+        val width = element.attr("width").toIntOrNull()
+        val height = element.attr("height").toIntOrNull()
+        val isEmoticon = element.hasAttr("data-mx-emoticon")
+        val span = InlineImageSpan(
+            src = src,
+            isEmoticon = isEmoticon,
+            width = width,
+            height = height,
+            title = title,
+            alt = alt,
+        )
+        append(span.fallbackText ?: "IMG")
+        setSpan(span, start, length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
     }
 
     private fun SpannableStringBuilder.parseLink(element: Element) {
@@ -420,6 +443,9 @@ internal class HtmlToSpansParser(
             // Blocks
             CodeBlockSpan::class.java,
             QuoteSpan::class.java,
+
+            // Inline images / custom emotes
+            InlineImageSpan::class.java,
         )
 
         fun Editable.removeFormattingSpans() = spans.flatMap { type ->
