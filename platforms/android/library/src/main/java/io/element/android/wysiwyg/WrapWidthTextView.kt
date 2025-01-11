@@ -5,6 +5,7 @@
 package io.element.android.wysiwyg
 
 import android.content.Context
+import android.graphics.Rect
 import android.text.Layout
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
@@ -19,6 +20,9 @@ open class WrapWidthTextView @JvmOverloads constructor(
 ) : AppCompatTextView(context, attrs, defStyleAttr) {
 
     var enableWrapWidth: Boolean = true
+
+    // Some Rect to use during draw, since we should not alloc it during draw
+    private val testBounds = Rect()
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -37,7 +41,16 @@ open class WrapWidthTextView @JvmOverloads constructor(
         var maxWidth = 0.0f
         val lines = layout.lineCount
         for (i in 0 until lines) {
-            maxWidth = max(maxWidth, layout.getLineWidth(i))
+            // For some reasons, the getLineWidth is not working too well with RTL lines when rendering replies.
+            // -> https://github.com/SchildiChat/SchildiChat-android/issues/74
+            // However, the bounds method is a little generous sometimes (reserving too much space),
+            // so we don't want to use it over getLineWidth() unless required.
+            maxWidth = if (layout.getParagraphDirection(i) == Layout.DIR_RIGHT_TO_LEFT) {
+                layout.getLineBounds(i, testBounds)
+                max((testBounds.right - testBounds.left).toFloat(), maxWidth)
+            } else {
+                max(layout.getLineWidth(i), maxWidth)
+            }
         }
         return maxWidth
     }
