@@ -33,3 +33,6 @@ $SED_CMD "$PACKAGE_JSON_REGEX" $SCRIPT_PATH/bindings/wysiwyg-wasm/package.json
 
 echo "Updating Android"
 $SED_CMD "$GRADLE_PROPERTIES_REGEX" $SCRIPT_PATH/platforms/android/gradle.properties
+
+SC_GRADLE_PROPERTIES_REGEX="s/^VERSION_NAME=.*$/VERSION_NAME=$VERSION/g"
+$SED_CMD "$SC_GRADLE_PROPERTIES_REGEX" $SCRIPT_PATH/platforms/android/gradle.properties
