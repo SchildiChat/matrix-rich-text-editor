@@ -5,7 +5,7 @@ homepage = "https://gitlab.com/andybalaam/wysiwyg-rust"
 repository = "https://gitlab.com/andybalaam/wysiwyg-rust"
 description = "Swift and Kotlin bindings for wysiwyg-rust"
 keywords = ["matrix", "chat", "messaging", "composer", "wysiwyg"]
-license = "AGPL-3.0"
+license-file = { workspace = true }
 name = "uniffi-wysiwyg-composer"
 version = "3.1.1"
 rust-version = { workspace = true }

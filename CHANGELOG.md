@@ -1,5 +1,23 @@
 # Changelog
 
+# [2.38.2]
+- [Android] Add line break between text nodes and block element.
+- [Web] Update vite to v6.0.9 to fix CVE in the dependency.
+
+# [2.38.1]
+- [Android] Workaround bug that caused the next focus view search loop when the editor is used in a Compose context, causing ANRs.
+- [Android] Fix crashes when either the editor or the rendering views contain a code block and their size changes, making the previously calculated and cached coordinates for rendering the code block invalid.
+- [Common] Change licensing to AGPLv3 + Element Commercial license. 
+
+# [2.38.0]
+- [Rust] Bump Rust version to `1.76`.
+- [Web] Bump wasm-pack version to `0.13.1`.
+- [Web] Switch bindings/wysiwyg-wasm from npm to yarn.
+- [Web] Add typescript checking to bindings/wysiwyg-wasm.
+- [Web] Update vite and related packages.
+- [Web] Simplify build scripts.
+- [Web] Publish a dual CJS/ESM package with platform-specific loaders.
+
 # [2.37.14]
 - [Android] Have separate modes for parsing HTML for 'editor mode' and 'message mode' using `isEditor: Boolean` parameter.
 - [Android] Try auto-selecting the latest NDK version available instead of using a hardcoded one.

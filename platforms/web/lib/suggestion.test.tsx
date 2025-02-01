@@ -2,15 +2,17 @@
 Copyright 2024 New Vector Ltd.
 Copyright 2023 The Matrix.org Foundation C.I.C.
 
-SPDX-License-Identifier: AGPL-3.0-only
+SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
 Please see LICENSE in the repository root for full details.
 */
 
-import init, {
+import {
+    initAsync,
     // eslint-disable-next-line camelcase
     new_composer_model,
     SuggestionPattern,
-} from '../generated/wysiwyg';
+} from '@vector-im/matrix-wysiwyg-wasm';
+
 import { SUGGESTIONS } from './constants';
 import {
     getSuggestionChar,
@@ -18,9 +20,7 @@ import {
     mapSuggestion,
 } from './suggestion';
 
-beforeAll(async () => {
-    await init();
-});
+beforeAll(initAsync);
 
 describe('getSuggestionChar', () => {
     it('returns the expected character', () => {

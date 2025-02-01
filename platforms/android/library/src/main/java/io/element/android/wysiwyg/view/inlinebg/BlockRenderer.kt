@@ -2,7 +2,7 @@
  * Copyright 2024 New Vector Ltd.
  * Copyright 2024 The Matrix.org Foundation C.I.C.
  *
- * SPDX-License-Identifier: AGPL-3.0-only
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
  * Please see LICENSE in the repository root for full details.
  */
 
@@ -33,8 +33,10 @@ internal class BlockRenderer(
         text: Spanned,
         spanType: Class<*>,
     ) {
-        val top = layout.getLineTop(startLine)
-        val bottom = layout.getLineBottom(endLine)
+        val actualStartLine = startLine.coerceIn(0, layout.lineCount - 1)
+        val actualEndLine = endLine.coerceIn(0, layout.lineCount - 1)
+        val top = layout.getLineTop(actualStartLine)
+        val bottom = layout.getLineBottom(actualEndLine)
         drawable.setBounds(
             if (leadingMargin > 0) leadingMargin - horizontalPadding else horizontalPadding,
             top + verticalPadding,

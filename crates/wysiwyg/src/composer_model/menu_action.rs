@@ -1,7 +1,7 @@
 // Copyright 2024 New Vector Ltd.
 // Copyright 2023 The Matrix.org Foundation C.I.C.
 //
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
 // Please see LICENSE in the repository root for full details.
 
 use std::collections::HashSet;
@@ -80,12 +80,10 @@ where
         start_location: usize,
         custom_suggestion_patterns: &HashSet<String>,
     ) -> Option<(PatternKey, String)> {
-        let Some(key) = PatternKey::from_string_and_suggestions(
+        let key = PatternKey::from_string_and_suggestions(
             text.to_string(),
             custom_suggestion_patterns,
-        ) else {
-            return None;
-        };
+        )?;
 
         if key.is_static_pattern() {
             text.pop_first();

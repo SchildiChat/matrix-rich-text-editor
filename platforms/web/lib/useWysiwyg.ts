@@ -2,7 +2,7 @@
 Copyright 2024 New Vector Ltd.
 Copyright 2022 The Matrix.org Foundation C.I.C.
 
-SPDX-License-Identifier: AGPL-3.0-only
+SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
 Please see LICENSE in the repository root for full details.
 */
 
@@ -56,14 +56,14 @@ export type WysiwygProps = {
 };
 
 export type UseWysiwyg = {
-    ref: React.MutableRefObject<HTMLDivElement | null>;
+    ref: RefObject<HTMLDivElement | null>;
     isWysiwygReady: boolean;
     wysiwyg: FormattingFunctions;
     content: string | null;
     actionStates: AllActionStates;
     debug: {
-        modelRef: RefObject<HTMLDivElement>;
-        testRef: RefObject<HTMLDivElement>;
+        modelRef: RefObject<HTMLDivElement | null>;
+        testRef: RefObject<HTMLDivElement | null>;
         resetTestCase: () => void | null;
         traceAction: TraceAction;
     };
@@ -133,3 +133,5 @@ export function useWysiwyg(wysiwygProps?: WysiwygProps): UseWysiwyg {
         messageContent: composerModel?.get_content_as_message_html() ?? null,
     };
 }
+
+export { initOnce } from './useComposerModel.js';

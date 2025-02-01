@@ -1,7 +1,7 @@
 // Copyright 2024 New Vector Ltd.
 // Copyright 2023 The Matrix.org Foundation C.I.C.
 //
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
 // Please see LICENSE in the repository root for full details.
 
 use ruma_common::{matrix_uri::MatrixId, IdParseError, MatrixToUri, MatrixUri};
@@ -191,7 +191,6 @@ fn parse_matrix_id(uri: &str) -> Option<MatrixId> {
 /// ruma.
 ///
 /// Returns the result of calling `parse` in ruma.
-
 #[cfg(any(test, feature = "custom-matrix-urls"))]
 fn parse_external_id(uri: &str) -> Result<MatrixToUri, IdParseError> {
     // first split the string into the parts we need

@@ -1,7 +1,7 @@
 // Copyright 2024 New Vector Ltd.
 // Copyright 2022 The Matrix.org Foundation C.I.C.
 //
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
 // Please see LICENSE in the repository root for full details.
 
 use crate::dom::nodes::dom_node::DomNodeKind;
@@ -170,6 +170,18 @@ where
     }
 }
 
+pub(crate) struct WrapSearchResult {
+    pub(crate) ancestor_handle: DomHandle,
+    pub(crate) start_handle: DomHandle,
+    pub(crate) end_handle: DomHandle,
+    pub(crate) range: Range,
+}
+
+struct HandleWithKind {
+    handle: DomHandle,
+    kind: DomNodeKind,
+}
+
 #[cfg(test)]
 mod test {
     use crate::tests::testutils_composer_model::{cm, restore_whitespace};
@@ -266,16 +278,4 @@ mod test {
         assert_eq!(ret.start_handle, DomHandle::from_raw(vec![0, 0]));
         assert_eq!(ret.end_handle, DomHandle::from_raw(vec![1, 1, 0]));
     }
-}
-
-pub(crate) struct WrapSearchResult {
-    pub(crate) ancestor_handle: DomHandle,
-    pub(crate) start_handle: DomHandle,
-    pub(crate) end_handle: DomHandle,
-    pub(crate) range: Range,
-}
-
-struct HandleWithKind {
-    handle: DomHandle,
-    kind: DomNodeKind,
 }

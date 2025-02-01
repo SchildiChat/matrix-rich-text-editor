@@ -2,7 +2,7 @@
  * Copyright 2024 New Vector Ltd.
  * Copyright 2024 The Matrix.org Foundation C.I.C.
  *
- * SPDX-License-Identifier: AGPL-3.0-only
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
  * Please see LICENSE in the repository root for full details.
  */
 
@@ -158,6 +158,16 @@ open class EditorStyledTextView : WrapWidthTextView {
         if (!isInit) return
         inlineCodeBgHelper.clearCachedPositions()
         codeBlockBgHelper.clearCachedPositions()
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        if (isInit) {
+            // The size changed, so the cached positions for the code renderers won't match anymore
+            inlineCodeBgHelper.clearCachedPositions()
+            codeBlockBgHelper.clearCachedPositions()
+        }
+
+        super.onSizeChanged(w, h, oldw, oldh)
     }
 
     /**

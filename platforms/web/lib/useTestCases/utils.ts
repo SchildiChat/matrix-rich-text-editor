@@ -2,7 +2,7 @@
 Copyright 2024 New Vector Ltd.
 Copyright 2022 The Matrix.org Foundation C.I.C.
 
-SPDX-License-Identifier: AGPL-3.0-only
+SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
 Please see LICENSE in the repository root for full details.
 */
 
@@ -12,7 +12,8 @@ import {
     ComposerUpdate,
     // eslint-disable-next-line camelcase
     new_composer_model_from_html,
-} from '../../generated/wysiwyg';
+} from '@vector-im/matrix-wysiwyg-wasm';
+
 import { getCurrentSelection } from '../dom';
 import { TraceAction } from '../types';
 import { isSelectTuple } from './assert';

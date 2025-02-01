@@ -1,7 +1,7 @@
 // Copyright 2024 New Vector Ltd.
 // Copyright 2022 The Matrix.org Foundation C.I.C.
 //
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
 // Please see LICENSE in the repository root for full details.
 
 use std::fmt::Display;
@@ -553,8 +553,7 @@ where
 
     /// Checks if the passed handle is the last one in its parent.
     pub fn is_last_in_parent(&self, handle: &DomHandle) -> bool {
-        return self.parent(handle).children().len()
-            == handle.index_in_parent() + 1;
+        self.parent(handle).children().len() == handle.index_in_parent() + 1
     }
 
     /// Gets the previous sibling of the node if exists.
