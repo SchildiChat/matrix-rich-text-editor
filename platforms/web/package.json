@@ -1,6 +1,6 @@
 {
     "name": "@schildi-chat/matrix-wysiwyg",
-    "version": "3.1.2",
+    "version": "3.1.3",
     "type": "module",
     "description": "Wysiwyg composer for Element Web using React",
     "author": "New Vector Ltd.",
