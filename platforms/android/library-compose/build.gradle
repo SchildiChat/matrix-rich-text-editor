@@ -18,7 +18,7 @@ if (project.hasProperty("coverage")) {
 mavenPublishing {
     pomFromGradleProperties()
     /* SC: nope
-    publishToMavenCentral(SonatypeHost.S01)
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
     */
 
@@ -96,7 +96,7 @@ dependencies {
     implementation libs.timber
 
     implementation libs.androidx.core
-    implementation platform('org.jetbrains.kotlin:kotlin-bom:2.1.10')
+    implementation platform('org.jetbrains.kotlin:kotlin-bom:2.1.21')
     implementation libs.androidx.lifecycle.runtime
     implementation libs.androidx.activity.compose
     implementation platform(libs.androidx.compose.bom)
