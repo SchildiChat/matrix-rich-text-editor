@@ -9,10 +9,11 @@
 package io.element.android.wysiwyg.utils
 
 import android.text.Spanned
-import io.element.android.wysiwyg.display.TextDisplay
 import io.element.android.wysiwyg.display.MentionDisplayHandler
+import io.element.android.wysiwyg.display.TextDisplay
 import io.element.android.wysiwyg.test.fakes.createFakeStyleConfig
 import io.element.android.wysiwyg.test.utils.dumpSpans
+import io.element.android.wysiwyg.view.spans.OrderedListSpan
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.equalTo
@@ -74,6 +75,32 @@ class HtmlToSpansParserTest {
                 """.trimIndent()
             )
         )
+    }
+
+    @Test
+    fun testOrderedListWithStartAttribute() {
+        val html = """
+            <ol start="3">
+                <li>ordered1</li>
+                <li>ordered2</li>
+            </ol>
+        """.trimIndent()
+        val spanned = convertHtml(html)
+
+        assertThat(
+            spanned.dumpSpans().joinToString(",\n"), equalTo(
+                """
+                    ordered1: io.element.android.wysiwyg.view.spans.OrderedListSpan (0-8) fl=#17,
+                    ordered2: io.element.android.wysiwyg.view.spans.OrderedListSpan (9-17) fl=#17
+                """.trimIndent()
+            )
+        )
+
+        val listItemSpans = spanned.getSpans(0, spanned.length, OrderedListSpan::class.java)
+        // The first item should have order 3
+        assert(listItemSpans.first().order == 3)
+        // The second item should continue the order
+        assert(listItemSpans.last().order == 4)
     }
 
     @Test
@@ -240,6 +267,31 @@ class HtmlToSpansParserTest {
         })
         assertThat(
             spanned.toString(), equalTo("Hello\n\nWorld!")
+        )
+    }
+
+    @Test
+    fun testLeadingLineBreakCharsInHtmlTextAreIgnored() {
+        val html = "<p>First Line</p>\n<p>Line after Empty Line<br />\nThird Line</p>\n"
+        val spanned = convertHtml(
+            html = html,
+            isEditor = false,
+        )
+        assertThat(
+            spanned.toString(), equalTo("First Line\n\nLine after Empty Line\nThird Line")
+        )
+    }
+
+    @Test
+    fun testLineBreakCharsInMiddleOrEndOfHtmlTextAreConvertedToWhitespace() {
+        val html = "<p>First Line\n</p><p>Line after Empty Line<br />Third\n\n\n\nWith more</p>"
+        val spanned = convertHtml(
+            html = html,
+            isEditor = false,
+        )
+        assertThat(
+            spanned.toString(),
+            equalTo("First Line\n\nLine after Empty Line\nThird With more")
         )
     }
 

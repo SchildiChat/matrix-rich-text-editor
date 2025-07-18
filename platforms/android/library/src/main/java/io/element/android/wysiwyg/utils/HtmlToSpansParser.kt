@@ -65,6 +65,7 @@ internal class HtmlToSpansParser(
         )
         .addAttributes("a", "href", "data-mention-type", "contenteditable")
         .addAttributes("img", "src", "title", "alt", "width", "height", "data-mx-emoticon")
+        .addAttributes("ol", "start")
 
     /**
      * Convert the HTML string into a [Spanned] text.
@@ -219,7 +220,13 @@ internal class HtmlToSpansParser(
             "ol" -> {
                 val typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
                 val textSize = 16.dpToPx()
-                val order = (element.parent()?.select("li")?.indexOf(element) ?: 0) + 1
+                val indexInList = listParent.select("li").indexOf(element)
+                val customOrder = listParent.attr("start").toIntOrNull()
+                val order = if (customOrder != null) {
+                    customOrder + indexInList
+                } else {
+                    indexInList + 1 // Default to 1-based index
+                }
                 OrderedListSpan(typeface, textSize, order, gapWidth)
             }
             else -> return
@@ -404,7 +411,7 @@ internal class HtmlToSpansParser(
                 } else if ((stripLeading && !reachedNonWhite) || lastWasWhite) {
                     i += Character.charCount(c)
                     continue
-                } else if (c == '\n'.code && i == text.length - 1) {
+                } else if (c == '\n'.code && (i == text.length - 1 || !reachedNonWhite)) {
                     // Do nothing, this is probably just an HTML formatting line break
                 } else {
                     result.append(' ')
