@@ -1,6 +1,6 @@
 {
   "name": "@vector-im/matrix-wysiwyg-wasm",
-  "version": "3.1.7",
+  "version": "3.1.8",
   "homepage": "https://gitlab.com/andybalaam/wysiwyg-rust",
   "description": "WASM bindings for wysiwyg-rust",
   "license": "SEE LICENSE IN README.md",
