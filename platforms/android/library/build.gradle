@@ -99,7 +99,7 @@ android {
     }
 
     //ndkVersion getNdkVersionAsWorkaround()
-    ndkVersion = "27.2.12479018" // SC: fix to same version as SchildiNext+Rust-SDK for reproducible F-Droid builds
+    ndkVersion = "28.2.13676358" // SC: fix to same version as SchildiNext+Rust-SDK for reproducible F-Droid builds
 }
 
 kotlin {
