@@ -28,10 +28,7 @@ mavenPublishing {
 publishing {
     repositories {
         maven {
-            name = "githubPackages"
-            url = "https://maven.pkg.github.com/SchildiChat/matrix-rich-text-editor"
-            // Env vars: `ORG_GRADLE_PROJECT_githubPackagesUsername` and `ORG_GRADLE_PROJECT_githubPackagesPassword`
-            credentials(PasswordCredentials)
+            url = "../../../../spiritcroc-maven"
         }
     }
 }
