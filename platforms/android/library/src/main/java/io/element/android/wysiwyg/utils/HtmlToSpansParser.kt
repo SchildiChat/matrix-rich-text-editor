@@ -33,13 +33,11 @@ import io.element.android.wysiwyg.view.spans.PillSpan
 import io.element.android.wysiwyg.view.spans.PlainAtRoomMentionDisplaySpan
 import io.element.android.wysiwyg.view.spans.QuoteSpan
 import io.element.android.wysiwyg.view.spans.UnorderedListSpan
-import org.jsoup.Jsoup
 import org.jsoup.internal.StringUtil
-import org.jsoup.nodes.Document.OutputSettings
+import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
-import org.jsoup.safety.Safelist
 import timber.log.Timber
 import kotlin.math.roundToInt
 
@@ -52,28 +50,16 @@ import kotlin.math.roundToInt
  */
 internal class HtmlToSpansParser(
     private val resourcesHelper: ResourcesHelper,
-    private val html: String,
+    private val dom: Document,
     private val styleConfig: StyleConfig,
     private val mentionDisplayHandler: MentionDisplayHandler?,
     private val isEditor: Boolean,
     private val isMention: ((text: String, url: String) -> Boolean)? = null,
 ) {
-    private val safeList = Safelist()
-        .addTags(
-            "a", "b", "strong", "i", "em", "u", "del", "code", "ul", "ol", "li", "pre",
-            "blockquote", "p", "br", "img"
-        )
-        .addAttributes("a", "href", "data-mention-type", "contenteditable")
-        .addAttributes("img", "src", "title", "alt", "width", "height", "data-mx-emoticon")
-        .addAttributes("ol", "start")
-
     /**
      * Convert the HTML string into a [Spanned] text.
      */
     fun convert(): Spanned {
-        val outputSettings = OutputSettings().prettyPrint(false).indentAmount(0)
-        val cleanHtml = Jsoup.clean(html, "", safeList, outputSettings)
-        val dom = Jsoup.parse(cleanHtml)
         val text = buildSpannedString {
             val body = dom.body()
             parseChildren(body)
