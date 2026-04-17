@@ -9,6 +9,8 @@ on:
   pull_request:
     branches: ["main"]
 
+permissions: {}
+
 concurrency:
   group: ${{ github.ref == 'refs/heads/main' && format('react-build-main-{0}', github.sha) || format('react-build-pr-{0}', github.ref)  }}
   cancel-in-progress: true
@@ -23,17 +25,26 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Rust & Cargo cache
-        uses: Swatinem/rust-cache@v2
-      - name: Build
-        run: make web
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "yarn"
-          cache-dependency-path: platforms/web/yarn.lock
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Cache Yarn dependencies
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: ~/.yarn/berry/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('platforms/web/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Rust & Cargo cache
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+      - name: Build
+        run: make web
       - name: Typescript check
         working-directory: platforms/web
         run: yarn tsc
@@ -44,7 +55,7 @@ jobs:
         working-directory: platforms/web
         run: yarn coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@75cd11691c0faa626561e295848008c8a7dddffe # v5.5.4
         with:
           files: platforms/web/coverage/lcov.info
           fail_ci_if_error: true
@@ -52,16 +63,16 @@ jobs:
           # https://github.com/codecov/codecov-action/issues/557#issuecomment-1216749652
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: coverage
           path: |
             platforms/web/coverage
             !platforms/web/coverage/lcov-report
             !platforms/web/coverage/tmp
+      - name: Install Playwright browsers
+        working-directory: platforms/web
+        run: npx playwright install --with-deps chromium
       - name: Browser Test
-        uses: cypress-io/github-action@v4
-        with:
-          browser: electron
-          working-directory: platforms/web
-          start: yarn dev
+        working-directory: platforms/web
+        run: yarn test:e2e

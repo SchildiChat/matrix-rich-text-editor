@@ -4,7 +4,9 @@ on:
   push:
     tags:
       - '*'
-  workflow_dispatch:
+  workflow_dispatch: # zizmor: ignore[dangerous-triggers]
+
+permissions: {}
 
 env:
   GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx4096m -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError" -Dkotlin.daemon.jvm.options="-Xmx2560m" -Dkotlin.incremental=false
@@ -18,12 +20,13 @@ env:
 jobs:
   ios:
     name: Publish to Swift repo
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: 🧮 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Install rust
         run: |
@@ -33,52 +36,58 @@ jobs:
       - name: Install targets
         run: make targets-ios
           
-      - name: Set Xcode 15.4
-        run: sudo xcode-select -switch /Applications/Xcode_15.4.app
+      - name: Set Xcode 26.1
+        run: sudo xcode-select -switch /Applications/Xcode_26.1.app
 
       - name: Set SwiftPM Repo credentials
-        uses: de-vri-es/setup-git-credentials@v2
+        uses: de-vri-es/setup-git-credentials@5e1f18da68b7039c7f824408d170811aaec93ca8 # v2.1.2
         with:
           credentials: https://${{secrets.PAT_USER}}:${{secrets.PAT}}@github.com/
 
       - name: Get tag
         id: tag
-        uses: dawidd6/action-get-tag@v1
+        uses: dawidd6/action-get-tag@727a6f0a561be04e09013531e73a3983a65e3479 # v1.1.0
           
       - name: Release iOS
         working-directory: platforms/ios/tools/release
-        run: swift run release --version ${{ steps.tag.outputs.tag }}
+        run: swift run release --version ${STEPS_TAG_OUTPUTS_TAG}
         env:
           SWIFT_RELEASE_TOKEN: ${{ secrets.PAT }}
+          STEPS_TAG_OUTPUTS_TAG: ${{ steps.tag.outputs.tag }}
 
   android:
     name: Publish to maven
     runs-on: ubuntu-latest # No need for macos-latest if there are no UI tests
     steps:
       - name: 🧮 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: ☕️ Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: 'temurin'
           java-version: '21'
 
       - name: 🔧 Rust & Cargo cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
         with:
           cache-on-failure: true
+          lookup-only: true
 
       - name: 🦀 Install Rust targets
         run: make targets-android
 
-      - name: ⬆️ Publish to Sonatype
-        uses: gradle/gradle-build-action@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
         with:
-          build-root-directory: platforms/android
-          arguments: publishAndReleaseToMavenCentral
+          cache-disabled: true
+
+      - name: ⬆️ Publish to Sonatype
+        working-directory: platforms/android
+        run: ./gradlew publishAndReleaseToMavenCentral
 
   npm:
     name: Publish to npm
@@ -88,24 +97,29 @@ jobs:
       id-token: write
     steps:
       - name: 🧮 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 22
+          package-manager-cache: false
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: 🦀 Build Rust
         run: "make web"
-
-      - name: 🔧 Yarn cache
-        uses: actions/setup-node@v4
-        with:
-          cache: "yarn"
-          cache-dependency-path: platforms/web/yarn.lock
-          registry-url: "https://registry.npmjs.org"
 
       # Ensure npm 11.5.1 or later is installed
       - name: Update npm
         run: npm install -g npm@latest
 
       - name: 🔨 Install dependencies
-        run: "yarn install --pure-lockfile"
+        run: "yarn install --immutable"
         working-directory: platforms/web
 
       - name: 🪚 Build

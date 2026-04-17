@@ -121,7 +121,7 @@ internal class HtmlToSpansParser(
         if (text.isEmpty()) return
 
         val previousSibling = child.previousSibling() as? Element
-        if (previousSibling != null && previousSibling.isBlock && !isLineBreak(previousSibling)) {
+        if (previousSibling != null && previousSibling.isBlockElement() && !isLineBreak(previousSibling)) {
             append('\n')
         }
         append(text)
@@ -143,7 +143,7 @@ internal class HtmlToSpansParser(
 
     private fun SpannableStringBuilder.parseLineBreak(element: Element) {
         val previousElementSibling = element.previousElementSibling()
-        if (previousElementSibling?.isBlock == true && !isLineBreak(previousElementSibling)) {
+        if (previousElementSibling?.isBlockElement() == true && !isLineBreak(previousElementSibling)) {
             append('\n')
         }
         append('\n')
@@ -203,7 +203,10 @@ internal class HtmlToSpansParser(
 
         val listParent = element.parents().find { it.tagName() == "ul" || it.tagName() == "ol" }
         val span = when (listParent?.tagName()) {
-            "ul" -> UnorderedListSpan(gapWidth, bulletRadius)
+            "ul" -> {
+                val level = element.parents().count { it.tagName() == "ul" } - 1
+                UnorderedListSpan(gapWidth, bulletRadius, level)
+            }
             "ol" -> {
                 val typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
                 val textSize = 16.dpToPx()
@@ -306,7 +309,7 @@ internal class HtmlToSpansParser(
      * character exists, set it as extra character so it's ignored when mapping indexes.
      */
     private fun SpannableStringBuilder.handleNbspInBlock(element: Element, start: Int, end: Int) {
-        if (!element.isBlock) return
+        if (!element.isBlockElement()) return
 
         if (element.childNodes().isEmpty() && this.isNotEmpty()) {
             this.append(NBSP)
@@ -326,7 +329,7 @@ internal class HtmlToSpansParser(
         }
 
         // If current element is not a block there's no need to add line breaks
-        if (!element.isBlock) return
+        if (!element.isBlockElement()) return
 
         // Pick the previous sibling node in the DOM
         var previousSibling = element.previousSibling()
@@ -477,5 +480,17 @@ internal class HtmlToSpansParser(
                 "Spans in text contain invalid spans.\n\n${textSpans.joinToString("\n")}"
             }
         }
+    }
+
+    /**
+     * Jsoup's [Element.isBlock] method treats various tags incorrectly as block elements, like
+     * `del` or `code`, which causes unwanted line breaks in the rendered text.
+     * This method implements a check with a subset of known block elements.
+     */
+    fun Element.isBlockElement(): Boolean {
+        return tagName() in listOf(
+            "p", "ul", "ol", "li", "hr", "pre", "blockquote", "div",
+            "h1", "h2", "h3", "h4", "h5", "h6",
+        )
     }
 }
